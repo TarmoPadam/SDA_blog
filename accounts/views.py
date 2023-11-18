@@ -16,7 +16,11 @@ def registration(request):
         if len(username) < 4:
             messages.error(request, "Username must be at least 4 characters")
             return redirect("register")
-        
+
         if User.objects.filter(username=username).exists():
             messages.error(request, "Username already exists")
             return redirect("register")
+
+        User.objects.create_user(username=username, password=pw)
+
+    return render(request, "registration/register.html")
