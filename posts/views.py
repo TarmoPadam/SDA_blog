@@ -75,3 +75,19 @@ def create_post(request):
         return redirect("home")
 
     return render(request, "create_post.html")
+
+
+@permission_required('posts.change_post', raise_exception=True)
+@login_required
+def post_update(request, pk):
+    post = Post.objects.get(pk=pk)
+
+    if request.method == "POST":
+        post.title = request.POST.get("title")
+        post.body = request.POST.get("body")
+        post.author = request.user
+        post.save()
+
+        return redirect("post_detail", pk=post.pk)
+
+    return render(request, "edit_post.html", context={"post": post})
